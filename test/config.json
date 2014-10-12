@@ -1,4 +1,5 @@
 {
+  "port": 4756,
   "AWSCredentials": {},
   "Applications": [{
     "ApplicationName": "api-service",
@@ -7,7 +8,7 @@
       "EnvironmentName": "api-service-dev",
       "Description": "Dev environment for API Service",
       "SolutionStackName": "64bit Amazon Linux 2014.09 v1.0.8 running Node.js",
-      "ConfigurationOptions": [
+      "OptionSettings": [
         { "Namespace": "aws:autoscaling:asg", "OptionName": "Availability Zones", "Value": "Any 1" },
         { "Namespace": "aws:autoscaling:asg", "OptionName": "Cooldown", "Value": 360 },
         { "Namespace": "aws:autoscaling:asg", "OptionName": "MinSize", "Value": 1 },
@@ -23,7 +24,7 @@
       "EnvironmentName": "api-service-prod",
       "Description": "Prod environment for API Service",
       "SolutionStackName": "64bit Amazon Linux 2014.09 v1.0.8 running Node.js",
-      "ConfigurationOptions": [
+      "OptionSettings": [
         { "Namespace": "aws:autoscaling:asg", "OptionName": "Availability Zones", "Value": "Any 1" },
         { "Namespace": "aws:autoscaling:asg", "OptionName": "Cooldown", "Value": 360 },
         { "Namespace": "aws:autoscaling:asg", "OptionName": "MinSize", "Value": 2 },
@@ -39,7 +40,7 @@
       "EnvironmentName": "client-dev",
       "Description": "Dev environment for client application",
       "SolutionStackName": "64bit Amazon Linux 2014.09 v1.0.8 running Node.js",
-      "ConfigurationOptions": [
+      "OptionSettings": [
         { "Namespace": "aws:autoscaling:asg", "OptionName": "Availability Zones", "Value": "Any 1" },
         { "Namespace": "aws:autoscaling:asg", "OptionName": "Cooldown", "Value": 360 },
         { "Namespace": "aws:autoscaling:asg", "OptionName": "MinSize", "Value": 1 },

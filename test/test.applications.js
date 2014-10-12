@@ -18,7 +18,7 @@ describe("API Applications", function () {
         .get("/api/applications")
         .expect(200)
         .end(function (err, res) {
-          var apps = res.body.Applications;
+          var apps = res.body;
           expect(apps.length).to.be.equal(4);
           expect(_.findWhere(apps, { ApplicationName: "api-service" })).to.be.ok;
           expect(_.findWhere(apps, { ApplicationName: "sandbox" })).to.be.ok;
@@ -32,7 +32,7 @@ describe("API Applications", function () {
         .get("/api/applications")
         .expect(200)
         .end(function (err, res) {
-          var apps = res.body.Applications;
+          var apps = res.body;
           expect(_.findWhere(apps, { ApplicationName: "api-service" }).defined).to.be.ok;
           expect(_.findWhere(apps, { ApplicationName: "client" }).defined).to.be.ok;
           expect(_.findWhere(apps, { ApplicationName: "sandbox" }).defined).to.be.not.ok;
@@ -45,11 +45,22 @@ describe("API Applications", function () {
         .get("/api/applications")
         .expect(200)
         .end(function (err, res) {
-          var apps = res.body.Applications;
+          var apps = res.body;
           expect(_.findWhere(apps, { ApplicationName: "api-service" }).aws).to.be.ok;
           expect(_.findWhere(apps, { ApplicationName: "client" }).aws).to.be.ok;
           expect(_.findWhere(apps, { ApplicationName: "sandbox" }).aws).to.be.ok;
           expect(_.findWhere(apps, { ApplicationName: "legacyapp" }).aws).to.be.not.ok;
+          done();
+        });
+    });
+    it("does not fetch environments of applications", function (done) {
+      request(sprout)
+        .get("/api/applications")
+        .expect(200)
+        .end(function (err, res) {
+          var apps = res.body;
+          var app = _.findWhere(apps, { ApplicationName: "api-service" });
+          expect(app.Environments).to.be.equal(undefined);
           done();
         });
     });
@@ -63,6 +74,7 @@ describe("API Applications", function () {
         .end(function (err, res) {
           var app = res.body;
           expect(app.ApplicationName).to.be.equal("api-service");
+          expect(app.Description).to.be.equal("My API Service");
           expect(new Date(app.DateCreated)).to.be.a("date");
           expect(app.aws).to.be.equal(true);
           expect(app.defined).to.be.equal(true);
@@ -95,12 +107,10 @@ describe("API Applications", function () {
           done();
         });
     });
-  });
-
-  describe("/api/applications/:name/environments", function () {
+    
     it("returns environments on AWS that are defined", function (done) {
       request(sprout)
-        .get("/api/applications/api-service/environments")
+        .get("/api/applications/api-service")
         .expect(200)
         .end(function (err, res) {
           var envs = res.body.Environments;
@@ -109,6 +119,7 @@ describe("API Applications", function () {
           var prod = _.findWhere(envs, { EnvironmentName: "api-service-prod" });
           expect(new Date(dev.DateUpdated)).to.be.a("date");
           expect(new Date(prod.DateUpdated)).to.be.a("date");
+          expect(dev.Description).to.be.equal("Dev environment for API Service");
           expect(dev.aws).to.be.equal(true);
           expect(dev.defined).to.be.equal(true);
           expect(prod.aws).to.be.equal(true);
@@ -118,7 +129,7 @@ describe("API Applications", function () {
     });
     it("returns environments on AWS that are not defined", function (done) {
       request(sprout)
-        .get("/api/applications/client/environments")
+        .get("/api/applications/client")
         .expect(200)
         .end(function (err, res) {
           var envs = res.body.Environments;
@@ -136,7 +147,7 @@ describe("API Applications", function () {
     }); 
     it("returns environments that are defined but not on AWS", function (done) {
       request(sprout)
-        .get("/api/applications/api-service/environments")
+        .get("/api/applications/api-service")
         .expect(200)
         .end(function (err, res) {
           var envs = res.body.Environments;
