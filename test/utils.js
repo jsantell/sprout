@@ -16,17 +16,37 @@ function makeEnvConfig (appName, envName) {
 }
 
 function seedAWS (jackie) {
+  var apps;
   return when.all([
     jackie.createApplication("api-service", { Description: apiApp.Description }),
     jackie.createApplication("sandbox", { Description: "developer's sandbox" }),
     jackie.createApplication("client", { Description: clientApp.Description })
-  ]).then(function (apps) {
+  ]).then(function (_apps) {
+    apps = _apps;
+
     return when.all([
-      apps[0].createEnvironment("api-service-dev", makeEnvConfig("api-service", "api-service-dev")),
-      apps[0].createEnvironment("api-service-prod", makeEnvConfig("api-service", "api-service-prod")),
-      apps[1].createEnvironment("test", makeEnvConfig("sandbox", "test")),
-      apps[2].createEnvironment("client-dev", makeEnvConfig("client", "client-dev")),
-      apps[2].createEnvironment("client-prod", makeEnvConfig("client", "client-prod"))
+      apps[0].createVersion({ VersionLabel: "1.0.0" }),
+      apps[0].createVersion({ VersionLabel: "1.2.0" }),
+      apps[0].createVersion({ VersionLabel: "1.3.0" }),
+      apps[0].createVersion({ VersionLabel: "2.0.0" }),
+      apps[1].createVersion({ VersionLabel: "0.0.0" }),
+      apps[2].createVersion({ VersionLabel: "stable" }),
+      apps[2].createVersion({ VersionLabel: "latest" })
+    ]).then(function () {
+      return apps; 
+    });
+  }).then(function (apps) {;
+    return when.all([
+      apps[0].createEnvironment("api-service-dev",
+        _.extend(makeEnvConfig("api-service", "api-service-dev"), { VersionLabel: "2.0.0" })),
+      apps[0].createEnvironment("api-service-prod",
+        _.extend(makeEnvConfig("api-service", "api-service-prod"), { VersionLabel: "1.3.0" })),
+      apps[1].createEnvironment("test",
+        _.extend(makeEnvConfig("sandbox", "test"), { VersionLabel: "0.0.0" })),
+      apps[2].createEnvironment("client-dev",
+        _.extend(makeEnvConfig("client", "client-dev"), { VersionLabel: "latest" })),
+      apps[2].createEnvironment("client-prod",
+        _.extend(makeEnvConfig("client", "client-prod"), { VersionLabel: "stable" })),
     ]);
   }).then(function (){});
 }

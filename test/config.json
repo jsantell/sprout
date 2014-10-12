@@ -35,7 +35,7 @@
     }]
   }, {
     "ApplicationName": "client",
-    "Description": "my client application",
+    "Description": "my client application for some clientside app and and and and and and and",
     "Environments": [{
       "EnvironmentName": "client-dev",
       "Description": "Dev environment for client application",

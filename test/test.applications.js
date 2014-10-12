@@ -160,4 +160,51 @@ describe("API Applications", function () {
         });
     }); 
   });
+
+  describe("/api/deploy/:app/:env/:version", function () {
+    it("deploys a new version on existing environment", function (done) {
+      request(sprout)
+        .post("/api/deploy/api-service/api-service-dev/1.0.0")
+        .expect(200)
+        .end(function (err, res) {
+          expect(res.body.message).to.be.ok;
+          expect(err).to.be.not.ok;
+          request(sprout)
+            .get("/api/applications/api-service")
+            .end(function (err, res) {
+              var env = _.findWhere(res.body.Environments, { EnvironmentName: "api-service-dev" });
+              expect(env.VersionLabel).to.be.equal("1.0.0");
+              done();
+            });
+        });
+    });
+    
+    it("deploys a new version on an environment that DNE but defined", function (done) {
+      request(sprout)
+        .post("/api/deploy/api-service/api-service-unused/1.0.0")
+        .expect(200)
+        .end(function (err, res) {
+          expect(res.body.message).to.be.ok;
+          expect(err).to.be.not.ok;
+          request(sprout)
+            .get("/api/applications/api-service")
+            .end(function (err, res) {
+              var env = _.findWhere(res.body.Environments, { EnvironmentName: "api-service-unused" });
+              expect(env.VersionLabel).to.be.equal("1.0.0");
+              done();
+            });
+        });
+    });
+    
+    it("fails when application is not defined, but app/env/version all exist", function (done) {
+      request(sprout)
+        .post("/api/deploy/sandbox/test/0.0.0")
+        .expect(400)
+        .end(function (err, res) {
+          expect(res.body.message).to.be.ok;
+          expect(err).to.be.not.ok;
+          done();
+        });
+    });
+  });
 });

@@ -23,9 +23,9 @@ exports.index = function (req, res) {
   var config = res.app.config;
 
   jackie.getApplications().then(function (apps) {
-    return formatApps(apps, config);
+    return formatApps(apps, config, false);
   }).then(function (apps) {
-    res.send({ Applications: apps });
+    res.send(apps || []);
   });
 };
 
@@ -42,11 +42,11 @@ exports.read = function (req, res) {
 
   jackie.getApplication(appName).then(function (app) {
     if (app) {
-      return formatAppFromAWS(app, config);
+      return formatAppFromAWS(app, config, true);
     }
     else {
       // This app wasn't found on AWS
-      return formatAppFromManifest(_.findWhere(config.Applications, { ApplicationName: appName }));
+      return formatAppFromManifest(_.findWhere(config.Applications, { ApplicationName: appName }), config, true);
     }
   }).then(res.send.bind(res));
 };
@@ -72,25 +72,89 @@ exports.environments = function (req, res) {
   }).then(res.send.bind(res));
 };
 
+exports.deploy = function (req, res) {
+  var jackie = res.app.jackie;
+  var config = res.app.config;
+  var appName = req.params.app;
+  var envName = req.params.env;
+  var version = req.params.version;
+
+  var appConfiguration = _.findWhere(config.Applications, { ApplicationName: appName });
+  var envConfiguration = _.findWhere((appConfiguration || {}).Environments || [], { EnvironmentName: envName });
+  
+  if (!envConfiguration || !appConfiguration) {
+    res.status(400);
+    res.send({ message: "Configuration not found for " + envName });
+    return;
+  }
+
+  var deploymentConfiguration = _.extend({}, envConfiguration, { VersionLabel: version });
+  var app;
+  jackie.getApplication(appName).then(function (_app) {
+    app = _app;
+    // If no app, this wasn't created on AWS yet, so create it
+    if (!_app) {
+      return jackie.createApplication(appName, appConfiguration)
+        .then(function (_app) {
+          app = _app;
+          app.createEnvironment(envName, deploymentConfiguration); 
+        });
+    } else {
+      return app.getEnvironment(envName).then(function (env) {
+        // If no environment, create one and use deployment configuration
+        if (!env) {
+          return app.createEnvironment(envName, deploymentConfiguration);
+        }
+        // Only update environment since we can't update config and version at the same time
+        return env.update({ VersionLabel: version });
+      });
+    }
+  }).then(function () {
+    res.send({ message: appName + "'s " + envName + " updating with application version " + version }); 
+  }, function (err) {
+    res.status(500);
+    res.send({ message: err });
+  });
+};
+
 /**
  * Format an app via an AWS request. Takes a Jackie.Application
- * and fetches info.
+ * and fetches info for itself and its environments.
  */
-function formatAppFromAWS (app, config) {
+function formatAppFromAWS (app, config, getEnvironments) {
   return app.info({ cached: true }).then(function (data) {
     data.defined = !!_.findWhere(config.Applications, { ApplicationName: data.ApplicationName });
     data.aws = true;
     return data;
+  }).then(function (data) {
+    if (!getEnvironments) {
+      return data;
+    }
+    return app.getEnvironments().then(function (envs) {
+      return formatEnvs(app.appName, envs, config).then(function (envs) {
+        data.Environments = envs;
+        return data;
+      });
+    });
   });
 }
 
-function formatAppFromManifest (app) {
-  return {
+function formatAppFromManifest (app, config, getEnvironments) {
+  var data = {
     ApplicationName: app.ApplicationName,
     Description: app.Description,
     defined: true,
     aws: false
   };
+
+  if (!getEnvironments) {
+    return data;
+  }
+
+  return formatEnvs(app.ApplicationName, [], config).then(function (envs) {
+    data.Environments = envs;
+    return data;
+  });
 }
 
 /**
@@ -103,13 +167,13 @@ function formatAppFromManifest (app) {
  * @return {Promise<[Object]>}
  */
 
-function formatApps (apps, config) {
+function formatApps (apps, config, getEnvironments) {
   return when.all(apps.map(function (app) {
-    return formatAppFromAWS(app, config);
+    return formatAppFromAWS(app, config, getEnvironments);
   })).then(function (apps) {
     config.Applications.forEach(function (app) {
       if (!_.findWhere(apps, { ApplicationName: app.ApplicationName })) {
-        apps.push(formatAppFromManifest(app));
+        apps.push(formatAppFromManifest(app, config, getEnvironments));
       }
     });
     return apps;
@@ -118,7 +182,7 @@ function formatApps (apps, config) {
 
 function formatEnvFromAWS (env, config) {
   return env.info({ cached: true }).then(function (data) {
-    var app = _.findWhere(config.Applications, { ApplicationName: data.ApplicationName });
+    var app = _.findWhere(config.Applications, { ApplicationName: data.ApplicationName }) || {};
     data.defined = !!_.findWhere(app.Environments || [], { EnvironmentName: data.EnvironmentName });
     data.aws = true;
     return data;
@@ -140,7 +204,7 @@ function formatEnvs (appName, envs, config) {
     return formatEnvFromAWS(env, config);
   })).then(function (envs) {
     // Add environments not on AWS
-    var app = _.findWhere(config.Applications, { ApplicationName: appName });
+    var app = _.findWhere(config.Applications, { ApplicationName: appName }) || {};
     var manifestEnvs = app.Environments || [];
     manifestEnvs.forEach(function (env) {
       if (!_.findWhere(envs, { EnvironmentName: env.EnvironmentName })) {

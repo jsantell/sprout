@@ -4,7 +4,7 @@
   "description": "Server for handling AWS EB environments and deployments",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha --reporter spec --ui bdd"
+    "test": "export NODE_ENV=test && ./node_modules/.bin/mocha --reporter spec --ui bdd"
   },
   "repository": {
     "type": "git",
@@ -18,15 +18,46 @@
   "homepage": "https://github.com/jsantell/sprout",
   "dependencies": {
     "express": "^4.9.7",
+    "express-cors": "0.0.3",
     "jackie": "0.0.1",
     "underscore": "^1.7.0",
     "when": "^3.5.0"
   },
   "devDependencies": {
+    "backbone": "1.1.2",
+    "backbone-promised": "0.0.3",
+    "brfs": "^1.2.0",
+    "browserify": "^5.11.0",
     "chai": ">= 1.1.1",
+    "gretchen": "0.0.3",
+    "gulp": "^3.8.7",
+    "gulp-browserify": "^0.5.0",
+    "gulp-clean": "^0.3.1",
+    "gulp-concat": "^2.3.4",
+    "gulp-connect": "^2.0.6",
+    "gulp-jade": "^0.7.0",
+    "gulp-less": "^1.3.5",
+    "gulp-rename": "^1.2.0",
+    "gulp-util": "^3.0.0",
+    "handlebars": "^2.0.0",
+    "hbsfy": "^2.1.0",
+    "jade": "1.3.0",
+    "less": "1.7.0",
     "mocha": ">= 1.3.2",
+    "moment": "^2.8.3",
+    "morgan": "^1.3.2",
+    "nib": "1.0.2",
     "request": "^2.45.0",
-    "supertest": "^0.14.0"
+    "stylus": "0.42.3",
+    "supertest": "^0.14.0",
+    "vinyl-source-stream": "^0.1.1",
+    "watchify": "^1.0.2"
+  },
+  "browserify": {
+    "transform": [
+      "hbsfy",
+      "brfs"
+    ]
   },
   "keywords": [
     "aws",
