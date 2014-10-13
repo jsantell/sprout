@@ -1,0 +1,32 @@
+doctype html
+//if lt IE 7
+  html.no-js.ie6.oldie(lang='en')
+//if IE 7
+  html.no-js.ie7.oldie(lang='en')
+//if IE 8
+  html.no-js.ie8.oldie(lang='en')
+//[if gt IE 8]><!
+html.no-js(lang='en')
+  //<![end if]
+  head
+    title= 'Sprout'
+    meta(charset='utf-8')
+    meta(description='')
+    link(rel='stylesheet', href='styles/site.css')
+    link(rel='icon', type='image/png', href='/favicon.png')
+  body
+    .navbar.navbar-inverse.navbar-fixed-top
+      .container-fluid
+        .navbar-header
+          button(type='button', class='navbar-toggle collapsed', data-toggle='collapse', data-target='.navbar-collapse')
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a.navbar-brand(href='#')
+        #header-controls.navbar-collapse.collapse
+
+    #container.container-fluid
+      #main
+        .loading-large
+
+    script(src='scripts/site.js')

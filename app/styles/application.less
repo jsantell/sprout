@@ -1,0 +1,84 @@
+.application {
+}
+
+.application-wrapper {
+  margin: 10px;
+  border: 1px solid #333;
+  max-height: 500px;
+  
+}
+
+.application-content {
+  padding: 10px;
+}
+
+.application h2 {
+  margin-top: 0px;
+  margin-left: 5px;
+  float: left;
+}
+
+.application .description {
+  float: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 250px;
+  margin-top: 12px;
+  margin-left: 5px;
+}
+
+.application-header {
+  background-color: #555;
+  color: #eee;
+  height: 45px;
+  padding: 5px;
+}
+
+.application .status-icons {
+  float: right;
+  margin-top: 7px;
+}
+.application .status-icons > div {
+  margin-right: 10px;
+}
+
+.application .application-defined {
+  float: right;
+}
+
+.application .application-defined-true {
+  display: none;
+}
+
+.application .application-aws {
+  height: 18px;
+  width: 20px;
+  background-size: 20px;
+  float: right;
+}
+
+.application .application-aws-true {
+  background-image: url("../images/awslogo.png");
+}
+
+.application .application-aws-false {
+  background-image: url("../images/awslogo-off.png");
+}
+
+.application .environments .environment {
+}
+
+.application .environments .env-name {
+  font-size: 18px;
+}
+
+.application .environments .environment-health-Red {
+  background-color: @danger; 
+}
+.application .environments .environment-health-Green {
+  background-color: @success; 
+}
+.application .environments .environment-health-Yellow {
+  background-color: @warning; 
+}

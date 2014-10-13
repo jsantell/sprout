@@ -1,0 +1,63 @@
+@mainColor: #00ABDF;
+@altColor: #F4DC00;
+@mutedColor: #0081C6;
+@darkColor: #3A4E4E;
+@accentColor: #00ABDF;
+//#FF4280
+
+@lighterGrey: #EEEEEE;
+@lightGrey: #CCCCCC;
+@mediumGrey: #888888;
+@darkGrey: #555;
+@darkerGrey: #333;
+
+// Copied from custom values in Bootstrap
+@success: #99CA3C;
+@warning: #f0ad4e;
+@danger: #d9534f;
+
+
+@mainText: @darkGrey;
+@navbarBackground: @darkerGrey;
+@appBackground: @darkGrey;
+
+// Stripes from Lea Verou
+// http://lea.verou.me/2010/12/checkered-stripes-other-background-patterns-with-css3-gradients/
+@defaultStripeSize: 8px 8px;
+.diagonalStripes() {
+  -webkit-background-size: @defaultStripeSize;
+  -moz-background-size: @defaultStripeSize;
+  background-size: @defaultStripeSize;
+  @background-color: rgba(255, 255, 255, .05);
+  background-image: -webkit-gradient(linear, 0 0, 100% 100%,
+    color-stop(.25, rgba(255, 255, 255, .05)), color-stop(.25, transparent),
+    color-stop(.5, transparent), color-stop(.5, rgba(255, 255, 255, .05)),
+    color-stop(.75, rgba(255, 255, 255, .05)), color-stop(.75, transparent),
+    to(transparent));
+  background-image: -webkit-linear-gradient(-45deg, rgba(255, 255, 255, .05) 25%, transparent 25%,
+    transparent 50%, rgba(255, 255, 255, .05) 50%, rgba(255, 255, 255, .05) 75%,
+    transparent 75%, transparent);
+  background-image: -moz-linear-gradient(-45deg, rgba(255, 255, 255, .05) 25%, transparent 25%,
+    transparent 50%, rgba(255, 255, 255, .05) 50%, rgba(255, 255, 255, .05) 75%,
+    transparent 75%, transparent);
+  background-image: -ms-linear-gradient(-45deg, rgba(255, 255, 255, .05) 25%, transparent 25%,
+    transparent 50%, rgba(255, 255, 255, .05) 50%, rgba(255, 255, 255, .05) 75%,
+    transparent 75%, transparent);
+  background-image: -o-linear-gradient(-45deg, rgba(255, 255, 255, .05) 25%, transparent 25%,
+    transparent 50%, rgba(255, 255, 255, .05) 50%, rgba(255, 255, 255, .05) 75%,
+    transparent 75%, transparent);
+  background-image: linear-gradient(-45deg, darken(@background-color, 3%) 25%, transparent 25%,
+    transparent 50%, darken(@background-color, 3%) 50%, darken(@background-color, 3%) 75%,
+    transparent 75%, transparent);
+}
+
+.desatch() {
+  filter: unquote("grayscale()"); /* Current draft standard */
+  -webkit-filter: unquote("grayscale(100%)"); /* New WebKit */
+  -moz-filter: unquote("grayscale(100%)");
+  -ms-filter: unquote("grayscale(100%)");
+  -o-filter: unquote("grayscale(100%)"); /* Not yet supported in Gecko, Opera or IE */ 
+  filter: url(../resources/filter.svg#desaturate); /* Gecko */
+  filter: gray; /* IE */
+  -webkit-filter: unquote("grayscale(1)"); /* Old WebKit */
+}

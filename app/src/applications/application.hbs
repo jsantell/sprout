@@ -1,0 +1,25 @@
+<div class="application-wrapper">
+  <div class="application-header">
+    <h2>{{ApplicationName}}</h2>
+    <div class="description">{{Description}}</div>
+    <div class="status-icons">
+      <div title="{{awsTooltip}}" class="application-aws application-aws-{{aws}}"></div>
+      <div title="{{definedTooltip}}" class="application-defined application-defined-{{defined}}">
+        <i class="fa fa-question"></i>
+      </div>
+    </div>
+  </div>
+  <div class="application-content">
+    <div class="last-updated" title="{{lastUpdatedExact}}">{{lastUpdatedVague}}</div>
+    <div class="list-group environments">{{#Environments}}
+      <a href="#" class="list-group-item environment environment-status-{{Status}} environment-health-{{Health}}">
+        <div class="environment-content">
+          <div class="env-name">{{EnvironmentName}}</div> 
+          <div class="last-updated" title="{{lastUpdatedExact}}">{{lastUpdatedVague}}</div>
+          <div class="env-cname">{{CNAME}}</div> 
+          <div class="env-label">{{VersionLabel}}</div>
+        </div>
+      </a>{{/Environments}}
+    </div>
+  </div>
+</div>
