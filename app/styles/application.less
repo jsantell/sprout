@@ -5,7 +5,6 @@
   margin: 10px;
   border: 1px solid #333;
   max-height: 500px;
-  
 }
 
 .application-content {
@@ -13,9 +12,14 @@
 }
 
 .application h2 {
-  margin-top: 0px;
+  margin-top: 5px;
   margin-left: 5px;
+  font-size: 20px;
   float: left;
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .application .description {
@@ -23,9 +27,10 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  width: 250px;
-  margin-top: 12px;
+  max-width: 250px;
+  margin-top: 11px;
   margin-left: 5px;
+  font-size: 12px;
 }
 
 .application-header {
@@ -82,3 +87,26 @@
 .application .environments .environment-health-Yellow {
   background-color: @warning; 
 }
+
+.application .environment .env-name {
+
+}
+.application .environment .env-cname {
+  display: block;
+}
+
+.application .environment .env-label {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+}
+
+.application .environment .environment-status {
+  display: none;
+}
+
+.application .environment-status-Launching .Launching { display: inline-block; }
+.application .environment-status-Updating .Updating { display: inline-block; }
+.application .environment-status-Ready .Ready { display: inline-block; }
+.application .environment-status-Terminating .Terminating { display: inline-block; }
+.application .environment-status-Terminated .Terminated { display: inline-block; }

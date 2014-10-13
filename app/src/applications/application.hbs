@@ -14,9 +14,15 @@
     <div class="list-group environments">{{#Environments}}
       <a href="#" class="list-group-item environment environment-status-{{Status}} environment-health-{{Health}}">
         <div class="environment-content">
-          <div class="env-name">{{EnvironmentName}}</div> 
-          <div class="last-updated" title="{{lastUpdatedExact}}">{{lastUpdatedVague}}</div>
-          <div class="env-cname">{{CNAME}}</div> 
+          <div>
+            <span class="env-name">{{EnvironmentName}}</span>
+            <i class="environment-status Launching fa fa-rocket"></i>
+            <i class="environment-status Updating fa fa-spinner fa-spin"></i>
+            <i class="environment-status Ready fa fa-thumbs-up"></i>
+            <i class="environment-status Terminating fa fa-trash-o fa-spin"></i>
+            <i class="environment-status Terminated fa fa-trash-o"></i>
+          </div>
+          <div class="env-description">{{Description}}</div>
           <div class="env-label">{{VersionLabel}}</div>
         </div>
       </a>{{/Environments}}

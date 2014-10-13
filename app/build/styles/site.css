@@ -7136,18 +7136,24 @@ h1 {
   padding: 10px;
 }
 .application h2 {
-  margin-top: 0px;
+  margin-top: 5px;
   margin-left: 5px;
+  font-size: 20px;
   float: left;
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .application .description {
   float: left;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  width: 250px;
-  margin-top: 12px;
+  max-width: 250px;
+  margin-top: 11px;
   margin-left: 5px;
+  font-size: 12px;
 }
 .application-header {
   background-color: #555;
@@ -7191,4 +7197,30 @@ h1 {
 }
 .application .environments .environment-health-Yellow {
   background-color: #f0ad4e;
+}
+.application .environment .env-cname {
+  display: block;
+}
+.application .environment .env-label {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+}
+.application .environment .environment-status {
+  display: none;
+}
+.application .environment-status-Launching .Launching {
+  display: inline-block;
+}
+.application .environment-status-Updating .Updating {
+  display: inline-block;
+}
+.application .environment-status-Ready .Ready {
+  display: inline-block;
+}
+.application .environment-status-Terminating .Terminating {
+  display: inline-block;
+}
+.application .environment-status-Terminated .Terminated {
+  display: inline-block;
 }

@@ -51,8 +51,9 @@ exports.read = function (req, res) {
   }).then(res.send.bind(res));
 };
 
-exports.environments = function (req, res) {
-  var appName = req.params.name;
+exports.environment = function (req, res) {
+  var appName = req.params.app;
+  var envName = req.params.env;
   var jackie = res.app.jackie;
   var config = res.app.config;
 

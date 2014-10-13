@@ -26,15 +26,11 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
     + escapeExpression(((helper = (helper = helpers.Status || (depth0 != null ? depth0.Status : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"Status","hash":{},"data":data}) : helper)))
     + " environment-health-"
     + escapeExpression(((helper = (helper = helpers.Health || (depth0 != null ? depth0.Health : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"Health","hash":{},"data":data}) : helper)))
-    + "\">\n        <div class=\"environment-content\">\n          <div class=\"env-name\">"
+    + "\">\n        <div class=\"environment-content\">\n          <div>\n            <span class=\"env-name\">"
     + escapeExpression(((helper = (helper = helpers.EnvironmentName || (depth0 != null ? depth0.EnvironmentName : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"EnvironmentName","hash":{},"data":data}) : helper)))
-    + "</div> \n          <div class=\"last-updated\" title=\""
-    + escapeExpression(((helper = (helper = helpers.lastUpdatedExact || (depth0 != null ? depth0.lastUpdatedExact : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"lastUpdatedExact","hash":{},"data":data}) : helper)))
-    + "\">"
-    + escapeExpression(((helper = (helper = helpers.lastUpdatedVague || (depth0 != null ? depth0.lastUpdatedVague : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"lastUpdatedVague","hash":{},"data":data}) : helper)))
-    + "</div>\n          <div class=\"env-cname\">"
-    + escapeExpression(((helper = (helper = helpers.CNAME || (depth0 != null ? depth0.CNAME : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"CNAME","hash":{},"data":data}) : helper)))
-    + "</div> \n          <div class=\"env-label\">"
+    + "</span>\n            <i class=\"environment-status Launching fa fa-rocket\"></i>\n            <i class=\"environment-status Updating fa fa-spinner fa-spin\"></i>\n            <i class=\"environment-status Ready fa fa-thumbs-up\"></i>\n            <i class=\"environment-status Terminating fa fa-trash-o fa-spin\"></i>\n            <i class=\"environment-status Terminated fa fa-trash-o\"></i>\n          </div>\n          <div class=\"env-description\">"
+    + escapeExpression(((helper = (helper = helpers.Description || (depth0 != null ? depth0.Description : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"Description","hash":{},"data":data}) : helper)))
+    + "</div>\n          <div class=\"env-label\">"
     + escapeExpression(((helper = (helper = helpers.VersionLabel || (depth0 != null ? depth0.VersionLabel : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"VersionLabel","hash":{},"data":data}) : helper)))
     + "</div>\n        </div>\n      </a>";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
@@ -102,8 +98,8 @@ function prettyDates (data) {
 
 },{"../views/view":"/Users/jsantell/Dev/sprout/app/src/views/view.js","./application.hbs":"/Users/jsantell/Dev/sprout/app/src/applications/application.hbs","moment":"/Users/jsantell/Dev/sprout/node_modules/moment/moment.js","underscore":"/Users/jsantell/Dev/sprout/node_modules/underscore/underscore.js"}],"/Users/jsantell/Dev/sprout/app/src/config.js":[function(require,module,exports){
 var config = {
-  apiURL: "http://localhost:4756/api/",
-  root: "/sprout/public/"
+  apiURL: window.location.port === "8080" ? "http://localhost:4756/api/" : "/api/",
+  root: "/"
 };
 
 module.exports = Object.freeze ? Object.freeze(config) : config;
