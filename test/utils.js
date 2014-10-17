@@ -1,53 +1,61 @@
 var _ = require("underscore");
 var when = require("when");
-var testConfig = require("./config.json");
-var envConfig = { "SolutionStackName": "64bit Amazon Linux 2014.09 v1.0.8 running Node.js" };
+var Task = require("co-task");
+var normalizeConfig = require("../lib/config-helpers").normalizeConfig;
+var testConfig = normalizeConfig(require("./config.json"));
+var DEFAULT_ENV_CONFIG = { "SolutionStackName": "64bit Amazon Linux 2014.09 v1.0.8 running Node.js" };
 
 var apiApp = _.findWhere(testConfig.Applications, { ApplicationName: "api-service" });
 var clientApp = _.findWhere(testConfig.Applications, { ApplicationName: "client" });
 
-function makeEnvConfig (appName, envName) {
+// Helper so Mocha knows that the test is async
+function asyncTest (fn) {
+  return function (done) {
+    var ctx = this;
+    Task.async(fn).call(ctx).then(done, done);
+  };
+}
+exports.asyncTest = asyncTest;
+
+function makeEnvConfig (appName, envName, label) {
   var app = _.findWhere(testConfig.Applications, { ApplicationName: appName });
-  if (!app) {
-    return envConfig;
+  var env;
+  if (app) {
+    env = _.findWhere(app.Environments, { EnvironmentName: envName });
   }
-  var env = _.findWhere(app.Environments, { EnvironmentName: envName });
-  return env || envConfig;
+  
+  if (!env) {
+    env =  _.extend({}, DEFAULT_ENV_CONFIG, { EnvironmentName: envName });
+  }
+  
+  return  _.extend({}, env, { ApplicationName: appName, VersionLabel: label });
 }
 
-function seedAWS (jackie) {
-  var apps;
-  return when.all([
-    jackie.createApplication("api-service", { Description: apiApp.Description }),
-    jackie.createApplication("sandbox", { Description: "developer's sandbox" }),
-    jackie.createApplication("client", { Description: clientApp.Description })
-  ]).then(function (_apps) {
-    apps = _apps;
+var seedAWS = Task.async(function *(eb) {
+  var apps = (yield when.all([
+    eb.createApplication({ ApplicationName: "api-service", Description: apiApp.Description }),
+    eb.createApplication({ ApplicationName: "sandbox", Description: "developer's sandbox" }),
+    eb.createApplication({ ApplicationName: "client", Description: clientApp.Description })
+  ])).map(function (app) { return app.Application });
+  
 
-    return when.all([
-      apps[0].createVersion({ VersionLabel: "1.0.0" }),
-      apps[0].createVersion({ VersionLabel: "1.2.0" }),
-      apps[0].createVersion({ VersionLabel: "1.3.0" }),
-      apps[0].createVersion({ VersionLabel: "2.0.0" }),
-      apps[1].createVersion({ VersionLabel: "0.0.0" }),
-      apps[2].createVersion({ VersionLabel: "stable" }),
-      apps[2].createVersion({ VersionLabel: "latest" })
-    ]).then(function () {
-      return apps; 
-    });
-  }).then(function (apps) {;
-    return when.all([
-      apps[0].createEnvironment("api-service-dev",
-        _.extend(makeEnvConfig("api-service", "api-service-dev"), { VersionLabel: "2.0.0" })),
-      apps[0].createEnvironment("api-service-prod",
-        _.extend(makeEnvConfig("api-service", "api-service-prod"), { VersionLabel: "1.3.0" })),
-      apps[1].createEnvironment("test",
-        _.extend(makeEnvConfig("sandbox", "test"), { VersionLabel: "0.0.0" })),
-      apps[2].createEnvironment("client-dev",
-        _.extend(makeEnvConfig("client", "client-dev"), { VersionLabel: "latest" })),
-      apps[2].createEnvironment("client-prod",
-        _.extend(makeEnvConfig("client", "client-prod"), { VersionLabel: "stable" })),
-    ]);
-  }).then(function (){});
-}
+  yield when.all([
+    eb.createApplicationVersion({ ApplicationName: apps[0].ApplicationName, VersionLabel: "1.0.0" }),
+    eb.createApplicationVersion({ ApplicationName: apps[0].ApplicationName, VersionLabel: "1.2.0" }),
+    eb.createApplicationVersion({ ApplicationName: apps[0].ApplicationName, VersionLabel: "1.3.0" }),
+    eb.createApplicationVersion({ ApplicationName: apps[0].ApplicationName, VersionLabel: "2.0.0" }),
+    eb.createApplicationVersion({ ApplicationName: apps[1].ApplicationName, VersionLabel: "0.0.0" }),
+    eb.createApplicationVersion({ ApplicationName: apps[2].ApplicationName, VersionLabel: "latest" }),
+    eb.createApplicationVersion({ ApplicationName: apps[2].ApplicationName, VersionLabel: "stable" }),
+  ]);
+
+  yield when.all([
+    eb.createEnvironment(makeEnvConfig("api-service", "api-service-dev", "2.0.0")),
+    eb.createEnvironment(makeEnvConfig("api-service", "api-service-prod", "1.3.0")),
+    eb.createEnvironment(makeEnvConfig("sandbox", "test", "0.0.0")),
+    eb.createEnvironment(makeEnvConfig("client", "client-dev", "latest")),
+    eb.createEnvironment(makeEnvConfig("client", "client-prod", "stable"))
+  ]);
+});
+
 exports.seedAWS = seedAWS;

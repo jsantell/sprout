@@ -1,19 +1,19 @@
-var _ = require("underscore");
 var express = require("express");
 var logger = require("morgan");
-var Jackie = require("jackie");
+var EB = require("./lib/eb");
+var normalizeConfig = require("./lib/config-helpers").normalizeConfig;
 var manifest = require("./package.json");
 var env = process.env.NODE_ENV;
 var isTest = env === "test";
 var isDemo = env === "demo";
-var sproutConfig = Object.freeze((isTest || isDemo) ? require("./test/config.json") : require("./config.json"));
-var jackieConfig = (isTest || isDemo) ? ({ mock: true }) : sproutConfig.AWSCredentials;
+var sproutConfig = normalizeConfig((isTest || isDemo) ? require("./test/config.json") : require("./config.json"));
+var ebConfig = (isTest || isDemo) ? ({ mock: true }) : sproutConfig.AWSCredentials;
 var port = sproutConfig.port || 9999;
 
 var app = module.exports = express();
 app.config = sproutConfig;
-app.jackie = new Jackie(jackieConfig);
-app.manifest = sproutConfig.applications || [];
+app.eb = new EB(ebConfig);
+app.manifest = sproutConfig.Applications;
 
 app.use(express.static(__dirname + '/app/build'));
 if (!isTest) {

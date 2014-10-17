@@ -1,15 +1,15 @@
 var _ = require("underscore");
 var expect = require("chai").expect;
-var Jackie = require("jackie");
 var request = require("supertest");
 var sprout = require("../");
 var utils = require("./utils");
+var EB = require("../lib/eb");
 
 describe("API Applications", function () {
   beforeEach(function (done) {
     sprout.config = require("./config.json");
-    sprout.jackie = new Jackie({ mock: true });
-    utils.seedAWS(sprout.jackie).then(done);
+    sprout.eb = new EB({ mock: true });
+    utils.seedAWS(sprout.eb).then(done);
   });
 
   describe("/api/applications/", function () {
